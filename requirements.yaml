@@ -1,0 +1,10 @@
+# conda create -n GG_LOI_tool -f requirements.yaml
+
+name: GG_LOI_tool
+channels:
+- conda-forge
+dependencies:
+- python=3
+- pip
+- pip:
+    - flask
