@@ -1,34 +1,53 @@
 # app.py
 
+# System imports
 from flask import Flask, request, jsonify
-import test_questions as questions
+from flask_cors import CORS
 #import sqlite3
 
+# Local imports
+import loi_questions as questions
+
 app = Flask(__name__)
+CORS(app)
 
-current_question_index = 0
+@app.route('/api/num_questions', methods=['GET', 'POST'])
+def get_num_questions():
+    print(f'getting the number of questions')
+    data = request.get_json()
+    #print(data)
+    list_id = data['endpoint']
+    if list_id == 'org_questions': res = len(questions.org_questions)
+    elif list_id == 'foundation_questions': res = len(questions.foundation_questions)
+    elif list_id == 'project_questions': res = len(questions.project_questions)
+    else: res = 0
+    return jsonify({'n_questions': res})
 
-@app.route('/api/question')
-def get_question():
-    global current_question_index
-    print(f'getting question ndx {current_question_index}')
-    question = questions.questions[current_question_index]
-    return jsonify({'question': question})
-
-@app.route('/api/org_questions')
+@app.route('/api/org_questions', methods=['POST'])
 def get_org_questions():
     print(f'getting org questions')
-    return jsonify({'questions': questions.org_questions})
+    print(request.data)
+    data = request.get_json()
+    print(data)
+    ndx = data['question_ndx'] if data and ('question_ndx' in data) else 0
+    print('responding with ', questions.org_questions[ndx])
+    return jsonify({'question': questions.org_questions[ndx]})
 
-@app.route('/api/foundation_questions')
+@app.route('/api/foundation_questions', methods=['POST'])
 def get_foundation_questions():
     print(f'getting foundation questions')
-    return jsonify({'questions': questions.foundation_questions})
+    data = request.get_json()
+    #print(data)
+    ndx = data['question_ndx']
+    return jsonify({'question': questions.foundation_questions[ndx]})
 
-@app.route('/api/project_questions')
+@app.route('/api/project_questions', methods=['POST'])
 def get_project_questions():
     print(f'getting project questions')
-    return jsonify({'questions': questions.foundation_questions})
+    data = request.get_json()
+    #print(data)
+    ndx = data['question_ndx']
+    return jsonify({'question': questions.project_questions[ndx]})
 
 @app.route('/api/submit_answer', methods=['POST'])
 def submit_answer():
