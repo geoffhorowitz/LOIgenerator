@@ -57,7 +57,7 @@ async function submitAnswer(answer_dict){
 
 export default function QABlock(props){
     // get inputs
-    const {question_ndx, endpoint_val, updateDict} = props;
+    const {question_ndx, endpoint_val, updateDictFcn} = props;
 
     // set up variables
     const [question, setQuestion] = useState('');
@@ -82,12 +82,15 @@ export default function QABlock(props){
 
     function handleTextareaChange(e) {
         setAnswer(e.target.value);
-        updateDict(question_ndx, answer);
+        //console.log('internal text change: '+e.target.value) //immediate result
+        //console.log('internal text change: '+answer) //delayed result
+        updateDictFcn(question_ndx, e.target.value);
     }
 
     useEffect(() => {
         //console.log('getting the question '+question_ndx+' from the server')
         getQuestion(endpoint_val);
+        updateDictFcn(question_ndx, '') // init with no value
         //console.log('done. response: '+question)
     }, [])
 

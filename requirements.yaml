@@ -9,3 +9,4 @@ dependencies:
 - pip:
     - flask
     - flask-cors
+    - python-dotenv

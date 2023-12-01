@@ -51,7 +51,7 @@ export default function AnswerForm({endpoint_val, n_questions}){
 
     const handleTextChange = (q_ndx, val) => {
         answer_dict[q_ndx] = val;
-        console.log(answer_dict[q_ndx])
+        //console.log(answer_dict[q_ndx])
     }
 
     /*useEffect(() => {
@@ -61,7 +61,7 @@ export default function AnswerForm({endpoint_val, n_questions}){
         //console.log('n_questions: '+n_questions)
         console.log('n_questions: '+n_questions)
         for (let i = 0; i < n_questions; i++){
-            const elem = <QABlock question_ndx={i} endpoint_val={endpoint_val} updateDict={handleTextChange}/>;
+            const elem = <QABlock question_ndx={i} endpoint_val={endpoint_val} updateDictFcn={handleTextChange}/>;
             qaBlocks.push(<div key={i}>{elem}</div>);
         }
     }, [])*/
@@ -69,7 +69,7 @@ export default function AnswerForm({endpoint_val, n_questions}){
     //const n_questions = await get_num_questions(endpoint_val); //async but doesn't return n_questions appropriately since this function is not async
     console.log('n_questions: '+n_questions)
     for (let i = 0; i < n_questions; i++){
-        const elem = <QABlock question_ndx={i} endpoint_val={endpoint_val} updateDict={handleTextChange}/>;
+        const elem = <QABlock question_ndx={i} endpoint_val={endpoint_val} updateDictFcn={handleTextChange}/>;
         qaBlocks.push(<div key={i}>{elem}</div>);
     }
     

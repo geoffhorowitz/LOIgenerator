@@ -9,6 +9,10 @@ LOI Generation Tool
 See [requirements file](requirements.yaml)
 Also requires npm installation from [Nodejs](https://nodejs.org/en/download)
 
+## LLM access
+an environment file should be included `./.env` in the top level directory. The .env file contains secrets and keys needed for various APIs. Current API keys include:
+- HUGGINGFACE_API_KEY: the API key for a huggingface InferenceClient
+
 # Run Procedure
 ## Front-end (react)
 

@@ -35,6 +35,7 @@ function submitForm(answer_dict) {
 export default async function submitForm(answer_dict){
     const proxy_route = getProxyRoute();
     console.log('submitting answers to '+proxy_route+'/api/submit_answer')
+    console.log(answer_dict)
     //const response = await axios.get(proxy_route+'/api/question');
     const response = await fetch(proxy_route + '/api/submit_answer', {
             method:'POST',

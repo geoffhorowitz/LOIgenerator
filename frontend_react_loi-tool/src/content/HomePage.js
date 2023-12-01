@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import submitForm from '../helpers/SubmitForm';
 
 
-export default function HomePage(){
+export default function HomePage({endpoint_val}){
     const [error, setError] = useState(null);
     const [status, setStatus] = useState('typing');
     const navigate = useNavigate();
@@ -35,7 +35,7 @@ export default function HomePage(){
         e.preventDefault();
         setStatus('submitting');
         try {
-            const next_route = await submitForm({'test': 'test'});
+            const next_route = await submitForm({"endpoint": endpoint_val});
             setStatus('success');
             console.log('submission success, next route: '+next_route)
             navigate(next_route); 

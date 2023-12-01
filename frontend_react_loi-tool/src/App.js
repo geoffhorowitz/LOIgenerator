@@ -31,6 +31,8 @@ export default function App() {
 
     //const {formStatus, setFormStatus} = useFormStatus();
 
+    const homepage = 'homepage';
+
     const form1 = 'org_questions'
     const form1_text = 'Organization Questions'
     const n_questions1 = 11;
@@ -87,7 +89,7 @@ export default function App() {
             <Route path="/" element={
                 <>
                   <div className='center'>
-                    <HomePage />
+                    <HomePage endpoint_val={homepage}/>
                   </div>
                 </>
               } />

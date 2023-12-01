@@ -1,12 +1,13 @@
 # app.py
 
 # System imports
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 #import sqlite3
 
 # Local imports
 import loi_questions as questions
+from models.llm_integrator import generate_image_from_prompt
 
 app = Flask(__name__)
 CORS(app)
@@ -72,25 +73,37 @@ def submit_answer():
     print('answer submitted')
     data = request.get_json()
     print(data)
-    if data and ('endpoint' in data) and ('answer_dict' in data):
-        topic = data['endpoint']
-        #q_ndx = data['question_ndx']
-        #answer = data['answer']
-        answer_dict = data['answer_dict']
+    if data: # only breaking all this up for debugging purposes (could check all at once)
+        if 'endpoint' in data:
+            topic = data['endpoint']
 
-        # Save answer to database here
-        # for testing
-        for q_ndx, answer in answer_dict.items():
-            print(f'for topic {topic}, question index {q_ndx}, saving answer to database: {answer}')
-        
-        # Connect to SQLite database to store data (makes it accessible to front-end)
-        #conn = sqlite3.connect('questions.db')
-        #c = conn.cursor()
+            if 'answer_dict' in data:
+                #q_ndx = data['question_ndx']
+                #answer = data['answer']
+                answer_dict = data['answer_dict']
 
-        # temporary fake database
-        for q_ndx, answer in answer_dict.items():
-            if topic in fake_database: fake_database[topic][int(q_ndx)] = answer
-            else: fake_database[topic] = {int(q_ndx): answer}
+                # Save answer to database here
+                # for testing
+                for q_ndx, answer in answer_dict.items():
+                    print(f'for topic {topic}, question index {q_ndx}, saving answer to database: {answer}')
+                
+                # Connect to SQLite database to store data (makes it accessible to front-end)
+                #conn = sqlite3.connect('questions.db')
+                #c = conn.cursor()
+
+                # temporary fake database
+                for q_ndx, answer in answer_dict.items():
+                    if topic in fake_database: fake_database[topic][int(q_ndx)] = answer
+                    else: fake_database[topic] = {int(q_ndx): answer}
+            else:
+                # this is ok, just getting next route without submitting data
+                pass
+        else:
+            print('no endpoint received')
+            topic = ''
+    else:
+        print('no data received')
+        topic = ''
 
     if topic == "homepage":
         next_route = 'org_questions'
@@ -99,6 +112,8 @@ def submit_answer():
     elif topic == 'foundation_questions':
         next_route = '/project_questions'
     elif topic == 'project_questions':
+        next_route = '/additional_questions'
+    elif topic == 'additional_questions':
         next_route = '/loi_generator'
     elif topic == 'loi_generator':
         next_route = '/'
@@ -113,7 +128,7 @@ def submit_answer():
 @app.route('/api/loi_generator', methods=['POST'])
 def loi_generator():
     # placeholder for prompt generation
-    print('registering something...')
+    print('registering prompt request...')
     
     # lets do a fake prompt
     fake_prompt = ''
@@ -124,7 +139,17 @@ def loi_generator():
             fake_prompt += f'\tQuestion: {questions[topic][q_ndx]}\n\t\t Answer: {answer}\n'
     fake_prompt+=f'\n\n'
     print('fake prompt: '+fake_prompt)
+
     return jsonify({'prompt': fake_prompt})
+
+@app.route('/api/get_generated_image', methods=['POST'])
+def get_generated_image():
+    # just a fun placeholder method
+    print('registering image request...')
+    # generate an image for the mission statement
+    image_prompt = questions['org_questions'][8] if ((8 in questions['org_questions']) and ('org_questions' in questions)) else 'Our mission is to help people'
+    
+    return generate_image_from_prompt(image_prompt)
 
 if __name__ == '__main__':
     print('starting up app')
