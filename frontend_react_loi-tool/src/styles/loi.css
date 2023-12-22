@@ -1,0 +1,17 @@
+.preserve-line-breaks {
+    white-space: pre-line;
+  }
+
+.text-container h4 {
+  margin: 40px
+}
+
+.text-container {
+  margin: 100px;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

@@ -4,10 +4,13 @@
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 #import sqlite3
+import os, json
 
 # Local imports
 import loi_questions as questions
-from models.llm_integrator import generate_image_from_prompt
+#from models.llm_integrator import generate_image_from_prompt
+from models.anthropic_api import Claude_Wrapper
+from prompt.generate_prompt import generate_loi_prompt, generate_loi_followup
 
 app = Flask(__name__)
 CORS(app)
@@ -73,7 +76,7 @@ def submit_answer():
     print('answer submitted')
     data = request.get_json()
     print(data)
-    if data: # only breaking all this up for debugging purposes (could check all at once)
+    if data: # only breaking this & next line up for debugging purposes (could check all at once)
         if 'endpoint' in data:
             topic = data['endpoint']
 
@@ -130,6 +133,7 @@ def loi_generator():
     # placeholder for prompt generation
     print('registering prompt request...')
     
+    '''
     # lets do a fake prompt
     fake_prompt = ''
     for topic in fake_database.keys():
@@ -141,6 +145,48 @@ def loi_generator():
     print('fake prompt: '+fake_prompt)
 
     return jsonify({'prompt': fake_prompt})
+    '''
+
+    # real prompt
+    org_input = {}
+    topic = 'org_questions'
+    for q_ndx in [0, 2, 8, 9]:
+        org_input[questions[topic][q_ndx]] = fake_database[topic][q_ndx] if topic in fake_database and q_ndx in fake_database[topic][q_ndx] else ''
+
+    for topic in ['foundation_questions', 'project_questions', 'additional_info']:
+        for q_ndx in range(len(questions[topic])):
+            org_input[questions[topic][q_ndx]] = fake_database[topic][q_ndx] if topic in fake_database and q_ndx in fake_database[topic][q_ndx] else ''
+
+
+    # testing prompt + output
+    output_loi = ''
+    for q, a in org_input.items():
+        output_loi += f"{q}: {a}\n"
+
+    fn = '/home/ghorowit/Desktop/github_repos/LOIgenerator/backend_flask/logs/claude-2.1_2023-12-21-00-17-33.json'
+    with open(fn, "r") as f:
+        raw_output = json.load(f)
+    for itm in raw_output:
+        if itm['role'] == 'assistant':
+            output_loi += itm['content'] + '\n\n'
+
+    return jsonify({'loi_data': output_loi})
+
+    # real output
+    output_loi = 'placeholder for addressing foundation by name.....\n\n'
+    client = Claude_Wrapper()
+    prompt = generate_loi_prompt(org_input)
+    client.set_system_prompt(prompt)
+    for followup in generate_loi_followup():
+        #print(followup)
+        output_loi += client.run_inference(followup)
+    client.shutdown()
+
+    output_loi += 'placeholder for addition of KPIs and signature of nonprofit....'
+
+    print('LOI Result: '+output_loi)
+    return jsonify({'loi_data': output_loi})
+
 
 @app.route('/api/get_generated_image', methods=['POST'])
 def get_generated_image():
@@ -149,7 +195,11 @@ def get_generated_image():
     # generate an image for the mission statement
     image_prompt = questions['org_questions'][8] if ((8 in questions['org_questions']) and ('org_questions' in questions)) else 'Our mission is to help people'
     
-    return generate_image_from_prompt(image_prompt)
+    #return jsonify({'image_url': generate_image_from_prompt(image_prompt)})
+    #image_path = os.path.join(os.getcwd(), '../assets/astronaut.png')
+    image_path = '/home/ghorowit/Desktop/github_repos/LOIgenerator/frontend_react_loi-tool/images/astronaut.png'
+    print('sending '+image_path)
+    return jsonify({'image_url': image_path})
 
 if __name__ == '__main__':
     print('starting up app')

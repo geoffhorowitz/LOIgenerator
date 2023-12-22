@@ -1,3 +1,6 @@
 /__pycache__
+*/__pycache__
 JFF*
 LT*
+prompt/loi_prompt.py
+logs/
