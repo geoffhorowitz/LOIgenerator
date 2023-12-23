@@ -151,11 +151,11 @@ def loi_generator():
     org_input = {}
     topic = 'org_questions'
     for q_ndx in [0, 2, 8, 9]:
-        org_input[questions[topic][q_ndx]] = fake_database[topic][q_ndx] if topic in fake_database and q_ndx in fake_database[topic][q_ndx] else ''
+        org_input[questions[topic][q_ndx]] = fake_database[topic][q_ndx] if topic in fake_database and q_ndx in fake_database[topic] else ''
 
     for topic in ['foundation_questions', 'project_questions', 'additional_info']:
         for q_ndx in range(len(questions[topic])):
-            org_input[questions[topic][q_ndx]] = fake_database[topic][q_ndx] if topic in fake_database and q_ndx in fake_database[topic][q_ndx] else ''
+            org_input[questions[topic][q_ndx]] = fake_database[topic][q_ndx] if topic in fake_database and q_ndx in fake_database[topic] else ''
 
 
     # testing prompt + output
@@ -173,7 +173,7 @@ def loi_generator():
     return jsonify({'loi_data': output_loi})
 
     # real output
-    output_loi = 'placeholder for addressing foundation by name.....\n\n'
+    output_loi = f'Dear Trustees of the {fake_database['foundation_questions'][0]}\n\n' if 'foundation_questions' in fake_database and 0 in fake_database['foundation_questions'] else 'To whom it may concern\n\n'
     client = Claude_Wrapper()
     prompt = generate_loi_prompt(org_input)
     client.set_system_prompt(prompt)
@@ -182,7 +182,14 @@ def loi_generator():
         output_loi += client.run_inference(followup)
     client.shutdown()
 
-    output_loi += 'placeholder for addition of KPIs and signature of nonprofit....'
+    # TODO
+    # placeholder for KPIs, additional information, etc
+
+    topic = 'org_questions'
+    output_loi+='\nWarm Regards,\n'
+    output_loi+=f'{fake_database[topic][4]}\n' if topic in fake_database and 4 in fake_database[topic] else ''
+    output_loi+=f'{fake_database[topic][5]}\n' if topic in fake_database and 5 in fake_database[topic] else ''
+    output_loi+=f'{fake_database[topic][0]}\n' if topic in fake_database and 0 in fake_database[topic] else ''
 
     print('LOI Result: '+output_loi)
     return jsonify({'loi_data': output_loi})
