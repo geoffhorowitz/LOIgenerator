@@ -19,7 +19,9 @@ an environment file should be included `./.env` in the top level directory. The 
 
 ### testing - run in debug mode
 cd frontend_react_loi-tool
-npm start
+`npm start`
+or to define port:
+`PORT=8000 npm start`
 
 ### runtime - build and run from backend
 #### go into the react folder and build the frontend

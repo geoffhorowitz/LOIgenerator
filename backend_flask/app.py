@@ -1,7 +1,7 @@
 # app.py
 
 # System imports
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, send_from_directory
 from flask_cors import CORS
 #import sqlite3
 import os, json
@@ -179,7 +179,7 @@ def loi_generator():
     return jsonify({'loi_data': output_loi})
 
     # real output
-    output_loi = f'Dear Trustees of the {fake_database['foundation_questions'][0]}\n\n' if 'foundation_questions' in fake_database and 0 in fake_database['foundation_questions'] else 'To whom it may concern\n\n'
+    output_loi = f"Dear Trustees of the {fake_database['foundation_questions'][0]}\n\n" if ('foundation_questions' in fake_database and 0 in fake_database['foundation_questions']) else "To whom it may concern\n\n"
     client = Claude_Wrapper()
     prompt = generate_loi_prompt(org_input)
     client.set_system_prompt(prompt)
@@ -216,4 +216,4 @@ def get_generated_image():
 
 if __name__ == '__main__':
     print('starting up app')
-    app.run(debug=True)
+    app.run(debug=False)
