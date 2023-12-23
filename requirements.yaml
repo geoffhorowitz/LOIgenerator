@@ -11,3 +11,4 @@ dependencies:
     - flask-cors
     - python-dotenv
     - anthropic
+    - gunicorn

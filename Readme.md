@@ -32,3 +32,9 @@ cp -r react-app/build flask-app/
 ## Back-end (flask)
 cd backend_flask/
 python app.py
+
+
+# Deployment
+for deployment, will use gunicorn optimized performance. Gunicorn takes your Flask app and runs it in a production-grade server process for serving real user traffic, as opposed to Flask's development server which is meant for development/testing. It's a robust WSGI server optimized for Python.
+
+to run: `gunicorn --bind 0.0.0.0:5000 app:app` # runs the app.py file app server <app.py:app> on port 5000

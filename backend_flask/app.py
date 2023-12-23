@@ -19,6 +19,12 @@ fake_database = {}
 
 questions = questions.questions
 
+# to run the front-end build file
+@app.route('/', defaults={'path': ''}) #route '/' handles requests to the root path. This will serve the index.html file from the React build folder by default.
+@app.route('/<path:path>') #route '/path:path' handles all other paths. This will serve other files like CSS and JS files from the build folder.
+def serve_react_app(path):
+    return send_from_directory('../frontend_react_loi-tool/build', path)
+
 @app.route('/api/num_questions', methods=['GET', 'POST'])
 def get_num_questions():
     print(f'getting the number of questions')
