@@ -163,7 +163,7 @@ def loi_generator():
         for q_ndx in range(len(questions[topic])):
             org_input[questions[topic][q_ndx]] = fake_database[topic][q_ndx] if topic in fake_database and q_ndx in fake_database[topic] else ''
 
-
+    '''
     # testing prompt + output
     output_loi = ''
     for q, a in org_input.items():
@@ -177,7 +177,7 @@ def loi_generator():
             output_loi += itm['content'] + '\n\n'
 
     return jsonify({'loi_data': output_loi})
-
+    '''
     # real output
     output_loi = f"Dear Trustees of the {fake_database['foundation_questions'][0]}\n\n" if ('foundation_questions' in fake_database and 0 in fake_database['foundation_questions']) else "To whom it may concern\n\n"
     client = Claude_Wrapper()
@@ -216,4 +216,4 @@ def get_generated_image():
 
 if __name__ == '__main__':
     print('starting up app')
-    app.run(debug=False)
+    app.run(debug=False, port=5000)

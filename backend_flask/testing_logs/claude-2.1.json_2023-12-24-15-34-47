@@ -1,0 +1,42 @@
+[
+    {
+        "role": "user",
+        "content": "Begin by writing the 1st section, introduction Paragraph"
+    },
+    {
+        "role": "assistant",
+        "content": "Introduction\n\nGreen Wings is committed to helping the world through thick and thin. Our objectives strongly align with The Money Foundation's funding areas of supporting people and moving money. As an organization targeting all peoples, we believe we are well-positioned to create positive change that fits within the Foundation's goals."
+    },
+    {
+        "role": "user",
+        "content": "Continue with the 2nd section, Statement of need"
+    },
+    {
+        "role": "assistant",
+        "content": "Statement of need\n\nIn a world filled with suffering, there is a vast need for organizations that help people so they can help other people. Our program, People Helping People, aims to address this need by creating a framework where people support each other. However, to properly execute this program, we require an influx of funding. \n\nWe are seeking $10 from The Money Foundation which will be specifically allocated towards the components of People Helping People centered on enabling people to help others. With the Foundation's support, we can expand the reach and impact of this program exponentially."
+    },
+    {
+        "role": "user",
+        "content": "Continue with the 3rd paragraph, Project narrative"
+    },
+    {
+        "role": "assistant",
+        "content": "Project narrative\n\nPeople Helping People is a continuous program focused on identifying people in need and matching them with others who can provide support. Once these connections are made, we facilitate the exchange of help, whether it be through donations, volunteering, emotional support, or other avenues. \n\nThe $10,000 requested from The Money Foundation will allow us to scale up People Helping People dramatically. We will be able to invest in technology to match people more effectively, fund the outreach needed to identify those needing help, and support the people powered exchanges that are core to our program. With the Foundation's backing, People Helping People can expand and thrive."
+    },
+    {
+        "role": "user",
+        "content": "Continue with the 4th paragraph, Anticipated outcomes"
+    },
+    {
+        "role": "assistant",
+        "content": "Anticipated outcomes\n\nWith the support of The Money Foundation, the People Helping People program aims to achieve the following outcomes:\n\n- Match 5x more people in need with people who can help them, creating a cascading network of support\n- Enable 10x more donations and volunteering exchanges \n- Develop the technological infrastructure and human networks to sustain the program long-term\n- Demonstrate a model of mutually beneficial assistance that can be replicated globally\n\nUltimately, by connecting people to help each other, we strive to create a world where the need for organized assistance diminishes over time. People Helping People aims to put itself out of business by enabling widespread human compassion."
+    },
+    {
+        "role": "user",
+        "content": "Finish with the final section, Closing remarks"
+    },
+    {
+        "role": "assistant",
+        "content": "Closing remarks\n\nAt its core, Green Wings believes in uplifting all people through acts of human kindness. With backing from partners like The Money Foundation, we can make programs like People Helping People a transformative force that spreads compassion at scale. What starts as a small investment has the potential to spur a movement of people helping people worldwide. We hope you will consider supporting this vision and enabling the first steps of a journey that could change millions of lives for the better. Just as we aim to create cascading networks of assistance between people, with your help, the impact of People Helping People can cascade across communities globally."
+    }
+]

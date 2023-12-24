@@ -1,18 +1,19 @@
 // System imports
 import React from 'react'
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 
 // Local imports
 import QuestionDisplay from './QuestionDisplay';
-
+import getProxyRoute from '../helpers/ProxyRoute';
 // proxy setting
+const proxy_route = getProxyRoute();
+/*
 var proxy_route = '';
 console.log('env '+process.env.NODE_ENV);
 if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
   // React is running in dev mode.
   proxy_route = 'http://localhost:5000'; //nothing likes proxy in package.json?
-}
+}*/
 
 
 async function get_question(endpoint_val, question_ndx) {
