@@ -3,6 +3,8 @@
 
 // Local imports
 import getProxyRoute from './ProxyRoute'
+import getConfigs from '../configs'
+const { debug_flag } = getConfigs()
 
 // // // SUBMIT BUTTON
 /*function submit_answers(answer_dict) {
@@ -33,10 +35,13 @@ function submitForm(answer_dict) {
 }*/
 
 export default async function submitForm(answer_dict){
-    const proxy_route = getProxyRoute()
-    console.log('proxy route: '+proxy_route)
-    console.log('submitting answers to '+proxy_route+'/api/submit_answer')
-    console.log(answer_dict)
+    var proxy_route = getProxyRoute()
+    if (debug_flag) {
+        console.log('hello from log')
+        console.log('proxy route: '+proxy_route)
+        console.log('submitting answers to '+proxy_route+'/api/submit_answer')
+        console.log(answer_dict)
+    }
     const response = await fetch(proxy_route + '/api/submit_answer', {
             method:'POST',
             headers: {
@@ -48,6 +53,6 @@ export default async function submitForm(answer_dict){
     //console.log(response);
     const data = await response.json();
     //console.log(data);
-    console.log('next route'+data.next_route);
+    if (debug_flag) {console.log('next route'+data.next_route);}
     return data.next_route;
 }

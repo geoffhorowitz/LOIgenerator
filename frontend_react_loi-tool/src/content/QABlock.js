@@ -5,8 +5,10 @@ import { useState, useEffect } from 'react';
 // Local imports
 import QuestionDisplay from './QuestionDisplay';
 import getProxyRoute from '../helpers/ProxyRoute';
+
 // proxy setting
-const proxy_route = getProxyRoute();
+//const proxy_route = getProxyRoute();
+var proxy_route = getProxyRoute();
 /*
 var proxy_route = '';
 console.log('env '+process.env.NODE_ENV);

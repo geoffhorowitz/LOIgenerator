@@ -13,17 +13,22 @@ from models.anthropic_api import Claude_Wrapper
 from prompt.generate_prompt import generate_loi_prompt, generate_loi_followup
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, support_credentials=True)
+
+#@app.route("/login")
+#@cross_origin(supports_credentials=True)
+#def login():
+#    return jsonify({'success': 'ok'})
 
 fake_database = {}
 
 questions = questions.questions
 
 # to run the front-end build file
-@app.route('/', defaults={'path': ''}) #route '/' handles requests to the root path. This will serve the index.html file from the React build folder by default.
-@app.route('/<path:path>') #route '/path:path' handles all other paths. This will serve other files like CSS and JS files from the build folder.
-def serve_react_app(path):
-    return send_from_directory('../frontend_react_loi-tool/build', path)
+#@app.route('/', defaults={'path': ''}) #route '/' handles requests to the root path. This will serve the index.html file from the React build folder by default.
+#@app.route('/<path:path>') #route '/path:path' handles all other paths. This will serve other files like CSS and JS files from the build folder.
+#def serve_react_app(path):
+#    return send_from_directory('../frontend_react_loi-tool/build', path)
 
 @app.route('/api/num_questions', methods=['GET', 'POST'])
 def get_num_questions():
@@ -216,4 +221,4 @@ def get_generated_image():
 
 if __name__ == '__main__':
     print('starting up app')
-    app.run(debug=False, port=5000)
+    app.run(debug=True, port=5000, host='0.0.0.0')
