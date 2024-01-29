@@ -18,6 +18,10 @@ an environment file should be included `./.env` in the top level directory. The 
 
 # Run Procedure
 ## Front-end (react)
+### 1st time setup
+install any necessary packages
+`npm install`
+
 
 ### testing - run in debug mode
 cd frontend_react_loi-tool

@@ -50,6 +50,7 @@ export default function HomePage({endpoint_val}){
     return (
         <form onSubmit={handleSubmit}>
             <h2>Ready to begin the LOI generator?</h2>
+            <p>We will ask you a series of questions about</p>
             <br />
             <button 
                 className="large-centered-button">
