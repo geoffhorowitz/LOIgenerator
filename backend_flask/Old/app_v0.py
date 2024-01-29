@@ -25,6 +25,11 @@ c = conn.cursor()
 @app.route('/<path:path>')
 def serve_react_app(path):
     return send_from_directory('build', path)
+
+# testing static file:
+@app.route('/')
+def test():
+    return send_from_directory('./', 'test.txt')
 '''
 # @app.route decorator defines the routes to the specific pages
 @app.route('/')
