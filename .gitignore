@@ -1,4 +1,5 @@
 .env
 loi_env/
 docker
-backend_flask/https_cert/
+backend_flask/https_cert
+*__pycache__*
