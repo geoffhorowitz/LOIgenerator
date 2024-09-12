@@ -48,12 +48,15 @@ with left_column.expander("Program Info"):
     user_data['prog_timeline']['a'] = st.text_area(questions['prog_timeline']['q'])
 
 with left_column.expander("Additional Info"):
-    user_data['add_info']['a'] = st.text_area(questions['add_info'])
+    user_data['add_info']['a'] = st.text_area(questions['add_info']['q'])
 
 
 # Add a "Generate LOI" button on the left column
 if left_column.button("Generate LOI"):
-    result = submit_answer(user_data, user_id)
     with right_column:  # Display the output in the right column
-        st.write("LOI generation in progress...")  # Placeholder for the actual LOI generation logic
-        # ... (Your LOI generation logic here)
+        with st.container():
+            st.write("LOI generation in progress...")
+            #for key, val in user_data.items(): if 'a' in val: st.write(f'{key}:\n\t {val['a']}')   
+            result = submit_answer(user_data, user_id)
+            st.write(result)
+            

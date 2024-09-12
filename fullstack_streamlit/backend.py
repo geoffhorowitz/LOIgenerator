@@ -12,7 +12,9 @@ from google_api import Gemini_Wrapper
 from generate_prompt import generate_loi_prompt, generate_loi_followup
 
 fake_database = {}
-db_path = os.path.join(os.getcwd(), 'database', 'loi_app.db')
+db_name = 'loi_app.db'
+db_path = os.path.join(os.getcwd(), 'database', db_name)
+#db_path = os.path.join(os.getcwd(), db_name)
 os.makedirs(os.path.dirname(db_path), exist_ok=True) # Ensure the directory exists
 
 def get_questions():
@@ -41,9 +43,14 @@ def generate_user_id(user_identifier: str) -> str:
 
 # Save user responses to the SQLite database
 def save_to_db(user_id: str, data: dict):
+    # Check if the database file exists
+    if not os.path.exists(db_path):
+        print("Database doesn't exist. Initializing the database...")
+        init_db()  # Call the function to create the database and tables
+
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
-    cursor.execute('''
+    cursor.execute(f'''
         INSERT INTO user_data (user_id, data)
         VALUES (?, ?)
     ''', (user_id, json.dumps(data)))  # Store data as a JSON string
