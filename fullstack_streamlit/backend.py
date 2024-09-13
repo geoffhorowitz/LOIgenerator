@@ -87,15 +87,16 @@ def loi_generator(data: dict):
         # TODO: add a yield here?
         #print(followup)
         output_loi += client.run_inference(followup)
+        break
     client.shutdown()
 
     # TODO
     # placeholder for KPIs, additional information, etc
 
     output_loi+='\nWarm Regards,\n'
-    output_loi+=f'{data['user_name']}\n' if 'user_name' in data else ''
-    output_loi+=f'{data['user_title']}\n' if 'user_title' in data else ''
-    output_loi+=f'{data['org_name']}\n' if 'org_name' in data else ''
+    output_loi+=f'{data['user_name']['a']}\n' if 'a' in data['user_name'] in data else ''
+    output_loi+=f'{data['user_title']['a']}\n' if 'a' in data['user_title'] in data else ''
+    output_loi+=f'{data['org_name']['a']}\n' if 'a' in data['org_name'] in data else ''
 
     print('LOI Result: '+output_loi)
     return output_loi

@@ -25,7 +25,7 @@ class Gemini_Wrapper:
         self.token_usage = 0
 
         genai.configure(api_key=os.environ.get("GOOGLE_API_KEY"))
-        self.model = genai.GenerativeModel('models/gemini-1.5-flash')
+        self.model = genai.GenerativeModel(model_name=self.model_name, system_instruction=self.system_prompt)
         self.chat = self.model.start_chat()
 
 
@@ -42,8 +42,18 @@ class Gemini_Wrapper:
 
         print('querying model...')
         response = self.chat.send_message(user_text)
-        self.token_usage += response.result.total_token_count
+        try:
+            #self.token_usage += response.result.total_token_count
+            #print(response)
+            #print(response.result)
+            #print(response._result)
+            print("Total Tokens:")
+            print(response.total_token_count)
+            #print(response._result["usage_metadata"]["total_token_count"])
+        except Exception as e:
+            pass
 
+        #return response._result["part"]["text"]
         return response.text
 
     #def append_text(self, text_to_append):
@@ -51,12 +61,17 @@ class Gemini_Wrapper:
     #    return self.history
 
     def shutdown(self):
-        if self.save_conversation:
-            # Find the last "/" and take only the text after it.
-            save_timestamp = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
-            save_loc = f"./loi_{self.model_name}_{save_timestamp}.json"
-            write_json_file(save_loc, self.chat.history)
-            write_text_file(save_loc[-5]+'_tokens.txt', self.token_usage)
+        try:
+            if self.save_conversation:
+                # Find the last "/" and take only the text after it.
+                save_timestamp = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+                save_loc = f"./logs/loi_{self.model_name}_{save_timestamp}.json"
+                #write_json_file(save_loc, self.chat.history)
+                write_text_file(save_loc, str(self.chat.history))
+                write_text_file(save_loc[-5]+'_tokens.txt', self.token_usage)
+        except Exception as e:
+            print('Error saving data: ')
+            print(e)
 
 
 if __name__ == "__main__":

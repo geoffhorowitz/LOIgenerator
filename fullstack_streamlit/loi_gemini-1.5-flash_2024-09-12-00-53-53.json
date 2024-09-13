@@ -1,0 +1,9 @@
+[parts {
+  text: "Begin by writing the 1st section, introduction Paragraph"
+}
+role: "user"
+, parts {
+  text: "Geoff Org is a non-profit organization dedicated to the simple yet powerful mission of \"People Helping People.\" We strive to create a more connected and supportive community for all individuals by fostering initiatives that bring people together.  Our commitment to enhancing human connection aligns perfectly with the Dan Foundation\'s dedication to supporting initiatives that directly benefit people. We believe that our \"Parks Program\" exemplifies this shared commitment, and we are confident that it will resonate deeply with the Dan Foundation\'s philanthropic goals. \n"
+}
+role: "model"
+]
