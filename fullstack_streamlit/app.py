@@ -1,13 +1,13 @@
 # system imports
 import streamlit as st
+import time
 
 # local imports
-from backend import get_questions, submit_answer, loi_generator  #, get_generated_image
+from backend import get_questions, submit_answer, loi_generator, submit_feedback  #, get_generated_image
 from style import *
 
 # variable initializations
 questions = get_questions()
-user_data = questions.copy()
 user_id = 'test_user'
 
 # app configs
@@ -16,15 +16,55 @@ st.set_page_config(layout="wide")
 # Load CSS styles from style.py
 st.markdown(load_css(), unsafe_allow_html=True)
 
-# Functional initialization
+# Session state initializations
+if 'loi_generated' not in st.session_state: 
+    st.session_state.loi_generated = False  # Initially, the LOI is not generated
+
+if 'ndx_counter' not in st.session_state:
+    st.session_state.ndx_counter = 0
+
+if 'user_data' not in st.session_state:
+    user_data = questions.copy()
+
 if 'expanders_expanded' not in st.session_state: # Initialize session state to manage expander visibility
     st.session_state.expanders_expanded = True  # Initially expanded
 
-def collapse_all_expanders():
-    st.session_state.expanders_expanded = False
 
-# Create two columns for the logo and title
-logo_column, title_column = st.columns([1, 9])  # Adjust the ratio as needed for desired spacing
+# Function definitions
+def collapse_all_expanders():
+    if st.session_state.expanders_expanded:
+        st.session_state.expanders_expanded = False
+
+def generate_input_layout():
+    titles = ['Organization Info', 'Foundation Info', 'Project Info', 'Additional Info']
+    tags = ['org_info', 'foundation_info', 'project_info', 'additional_info']
+    for title, tag in zip(titles, tags):
+        with st.expander(title, expanded=st.session_state.expanders_expanded):
+            for key, value in questions.items():
+                if value['category'] == tag:
+                    ndx = f'{st.session_state.ndx_counter}'
+                    user_data[key]['a'] = st.text_input(value['q']) if value['format'] == 'text_input' else st.text_area(value['q'])
+                    st.session_state.ndx_counter += 1 
+
+@st.dialog("Provide Feedback")
+def provide_feedback():
+    name = st.text_input("Your Name")
+    email = st.text_input("Email Address")
+    message = st.text_area("Message")
+    submit_feedback_button = st.button("Submit Feedback")
+
+    if submit_feedback_button:
+        if name and email and message:
+            submit_feedback(name, email, message)
+            st.success("Thank you for your feedback!")
+            show_feedback_form.empty()  # Clear the feedback form
+        else:
+            st.error("Please fill in all fields.")
+
+
+# Add Logo, App Title, and user's next steps buttons
+st.balloons()  # Add space at the top for buttons
+logo_column, title_column, hire_button, feedback_button  = st.columns([1, 7, 1, 1])  # Adjust the ratio as needed for desired spacing
 
 with logo_column:
     st.image("../assets/GG_logo.png", width=100)
@@ -34,57 +74,53 @@ with title_column:
     #st.title("Generosity AI")
     st.markdown(title_html("Generosity AI"), unsafe_allow_html=True)
 
+# Hire a professional button
+with hire_button:
+    st.button("Hire a Professional", on_click=lambda: st.write(f"[Visit Generosity Genius](www.generositygenius.org)"))
 
-# Create two columns for the split screen layout
-left_column, right_column = st.columns([2, 2])
-
-# Add the app name
-with left_column:
-    st.markdown(subtitle_html("LOI Generator"), unsafe_allow_html=True)
-
-with right_column:
-    st.markdown(subtitle_html("LOI Results"), unsafe_allow_html=True)
-
-# Add some subsections
-with left_column.expander("Organization Info", expanded=st.session_state.expanders_expanded):
-    user_data['org_name']['a'] = st.text_input(questions['org_name']['q'])
-    user_data['org_website']['a'] = st.text_input(questions['org_website']['q'])
-    user_data['org_mission']['a'] = st.text_area(questions['org_mission']['q'])
-    #user_data['org_audience']['a'] = st.text_input(questions['org_audience']['q'])
-    #user_data['org_kpis']['a'] = st.text_area(questions['org_kpis']['q'])
-
-with left_column.expander("Foundation Info", expanded=st.session_state.expanders_expanded):
-    for key, value in questions.items():
-        if value['category'] == 'foundation_info': user_data[key]['a'] = st.text_input(value['q']) if value['format'] == 'text_input' else st.text_area(value['q'])  
-    #user_data['found_name']['a'] = st.text_input(questions['found_name']['q'])
-    #user_data['found_alignment']['a'] = st.text_area(questions['found_alignment']['q'])
-    #user_data['found_request']['a'] = st.text_input(questions['found_request']['q'])
-
-with left_column.expander("Program Info", expanded=st.session_state.expanders_expanded):
-    user_data['prog_name']['a'] = st.text_input(questions['prog_name']['q'])
-    user_data['prog_description']['a'] = st.text_area(questions['prog_description']['q'])
-    user_data['prog_budget']['a'] = st.text_input(questions['prog_budget']['q'])
-    user_data['prog_audience']['a'] = st.text_area(questions['prog_audience']['q'])
-    #user_data['fund_uses']['a'] = st.text_input(questions['fund_uses']['q'])
-    user_data['prog_activities']['a'] = st.text_area(questions['prog_activities']['q'])
-    user_data['prog_outcomes']['a'] = st.text_area(questions['prog_outcomes']['q'])
-    #user_data['prog_partners']['a'] = st.text_input(questions['prog_partners']['q'])
-    user_data['prog_timeline']['a'] = st.text_area(questions['prog_timeline']['q'])
-
-with left_column.expander("Additional Info", expanded=st.session_state.expanders_expanded):
-    user_data['add_info']['a'] = st.text_area(questions['add_info']['q'])
+# Provide feedback button
+with feedback_button:
+    if st.button("Provide Feedback"):
+        provide_feedback()
 
 
-# Add a "Generate LOI" button on the left column
-with left_column:
-    st.markdown('<div class="center-button">', unsafe_allow_html=True)
-    if st.button("Generate LOI"):
-        collapse_all_expanders()
-        with right_column:  # Display the output in the right column
-            with st.chat_message('generator'):
+placeholder = st.empty()
+question_input = placeholder.container()
+
+# Initial layout logic
+if not st.session_state.loi_generated:
+    with question_input:
+        st.markdown(subtitle_html("LOI Generator"), unsafe_allow_html=True)
+
+        generate_input_layout()
+        
+        # Add a "Generate LOI" button
+        if st.button("Generate LOI"):
+            st.session_state.loi_generated = True  # Update state to show the new layout
+            collapse_all_expanders()
+            st.rerun()
+
+
+# After LOI generation, show the split-screen layout
+if st.session_state.loi_generated:
+    placeholder.empty() # clears the above layout
+    left_column, right_column = st.columns([2, 2])
+
+    #left_column = question_input
+    with left_column:
+        st.markdown(subtitle_html("LOI Generator"), unsafe_allow_html=True)
+
+        generate_input_layout()
+
+    with right_column:  # Display the output in the right column
+            st.markdown(subtitle_html("LOI Results"), unsafe_allow_html=True)
+            #with st.spinner(text='In progress'):
                 #st.write("LOI generation in progress...")
+                #result = submit_answer(user_data, user_id)
+                #st.success('Done')
+
+            with st.chat_message('generator'):
                 for key, val in user_data.items():
-                    if 'a' in val: st.write(f'{key}:\n\t {val['a']}')   
+                    if 'a' in val: st.write(f'{key}:\n\t {val['a']}') 
                 #result = submit_answer(user_data, user_id)
                 #st.write(result)
-    st.markdown('</div>', unsafe_allow_html=True)

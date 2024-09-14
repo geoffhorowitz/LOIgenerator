@@ -2,7 +2,7 @@
 
 # System imports
 import sqlite3
-import os, json
+import sys, os, json
 import hashlib
 
 # Local imports
@@ -10,6 +10,9 @@ import loi_questions
 #from models.llm_integrator import generate_image_from_prompt
 from google_api import Gemini_Wrapper
 from generate_prompt import generate_loi_prompt, generate_loi_followup
+sys.path.append('../general_utils')
+from filesystem_utils import write_text_file
+from db_utils import init_db, save_to_db
 
 fake_database = {}
 db_name = 'loi_app.db'
@@ -21,41 +24,9 @@ def get_questions():
     return loi_questions.questions
 
 
-# Database initialization (you can run this once to set up the table)
-def init_db():
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS user_data (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id TEXT NOT NULL,
-            data TEXT NOT NULL
-        )
-    ''')
-    conn.commit()
-    conn.close()
-
-
 # Generate a unique identifier using user_identifier (could be an email, username, etc.)
 def generate_user_id(user_identifier: str) -> str:
     return hashlib.sha256(user_identifier.encode()).hexdigest()
-
-
-# Save user responses to the SQLite database
-def save_to_db(user_id: str, data: dict):
-    # Check if the database file exists
-    if not os.path.exists(db_path):
-        print("Database doesn't exist. Initializing the database...")
-        init_db()  # Call the function to create the database and tables
-
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
-    cursor.execute(f'''
-        INSERT INTO user_data (user_id, data)
-        VALUES (?, ?)
-    ''', (user_id, json.dumps(data)))  # Store data as a JSON string
-    conn.commit()
-    conn.close()
 
 
 # The submit_answer function
@@ -63,12 +34,13 @@ def submit_answer(data: dict, user_identifier: str):
     user_id = generate_user_id(user_identifier)  # Generate a unique ID for the user
 
     # Store the user data in the SQLite database
-    save_to_db(user_id, data)
+    save_to_db(db_path, user_id, data)
 
     # Call the loi_generator function to create the LOI
     loi_text = loi_generator(data)  # Assuming this function returns a string LOI
 
     return loi_text
+
 
 def loi_generator(data: dict):
     print('registering prompt request...')
@@ -114,5 +86,12 @@ def get_generated_image(data: dict):
     print('sending '+image_path)
     return image_path
 
+
+def submit_feedback(name, email, message):
+    # TODO: send email
+    save_timestamp = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+    save_loc = f"./feedback/loi_app_{save_timestamp}.txt"
+    write_text_file(save_loc, f'Name: {name}\nEmail: {email}\nMessage: {message}')
+    
 if __name__ == '__main__':
     print('starting up app')

@@ -22,6 +22,10 @@ def load_css():
         display: flex;
         justify-content: center;
     }
+    .default-button {
+        background-color: #008000, 
+        color: white
+    }
     </style>
     """
 
